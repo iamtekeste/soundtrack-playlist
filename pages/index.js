@@ -33,8 +33,16 @@ export default class Index extends Component {
     console.log("...fetching movie details");
   });
   getSoundTrackList = selectedMovie => {
+    if (selectedMovie === null) return;
+    const soundtrackAPIURL = "/search";
     this.setState({ selectedMovie });
-    console.log("...fetching soundtrack list");
+    axios
+      .post(soundtrackAPIURL, {
+        selectedMovie
+      })
+      .then(response => {
+        console.log("client", response.data);
+      });
   };
   render = () => {
     const { movies, isLoading } = this.state;
