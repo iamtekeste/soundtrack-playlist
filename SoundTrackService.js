@@ -21,7 +21,7 @@ const getSoundTracks = soundtrackURL => {
   })
     .then(({ data, response }) => {
       if (response.statusCode === 200) return data;
-      return null;
+      throw new Error("404");
     })
     .catch(err => {
       throw err;

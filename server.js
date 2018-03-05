@@ -31,19 +31,24 @@ app.prepare().then(() => {
   });
   server.post("/search", (req, res) => {
     const { selectedMovie } = req.body;
-    let soundtrackURL = createSoundTracksPageURL(selectedMovie);
-    getSoundTracks(soundtrackURL)
-      .then(soundTrackList => {
-        return soundTrackList;
-      })
-      .then(soundTrackList => {
-        return buildPlaylist(soundTrackList);
-      })
-      .then(playListLink => {
-        res.json({ success: true, playListLink });
-      })
-      .catch(err => {
-        console.log(err);
+    let soundtrackURLWithYear = createSoundTracksPageURL(selectedMovie, true);
+    let soundtrackURLWithOutYear = createSoundTracksPageURL(
+      selectedMovie,
+      false
+    );
+
+    let source1 = getSoundTracks.bind(null, soundtrackURLWithYear);
+    let source2 = getSoundTracks.bind(null, soundtrackURLWithOutYear);
+
+    let sources = [source1, source2];
+
+    sources
+      .reduce((previousSource, source) => {
+        return previousSource.catch(failed => source());
+      }, Promise.reject())
+      .then(soundTrackList => res.json({ success: true, soundTrackList }))
+      .catch(error => {
+        res.json({ success: false });
       });
   });
   server.get("*", (req, res) => {
