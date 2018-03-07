@@ -1,7 +1,7 @@
 const {
-  buildPlaylist,
   getSoundTracks,
-  createSoundTracksPageURL
+  createSoundTracksPageURL,
+  createPlaylist
 } = require("./SoundTrackService");
 
 const express = require("express");
@@ -46,8 +46,14 @@ app.prepare().then(() => {
       .reduce((previousSource, source) => {
         return previousSource.catch(failed => source());
       }, Promise.reject())
-      .then(soundTrackList => res.json({ success: true, soundTrackList }))
+      .then(soundTrackList => {
+        return createPlaylist(soundTrackList, selectedMovie);
+      })
+      .then(playlistID => {
+        res.json({ success: true, playlistID });
+      })
       .catch(error => {
+        console.log(error);
         res.json({ success: false });
       });
   });

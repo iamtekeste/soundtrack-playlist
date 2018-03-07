@@ -4,6 +4,7 @@ import { debounce } from "../utils";
 import SearchForm from "../components/SearchForm";
 export default class Index extends Component {
   state = {
+    currentPlaylistID: "47Ne6hrPVXzA72EhtVE93H",
     selectedMovie: {},
     movies: [],
     isLoading: false,
@@ -25,7 +26,9 @@ export default class Index extends Component {
         }
       })
       .then(response => {
-        this.setState({ movies: response.data.results });
+        this.setState({
+          movies: response.data.results
+        });
       })
       .catch(error => {
         console.log(error);
@@ -36,23 +39,31 @@ export default class Index extends Component {
     if (selectedMovie === null) return;
     const soundtrackAPIURL = "/search";
     this.setState({ selectedMovie });
-    axios
-      .post(soundtrackAPIURL, {
-        selectedMovie
-      })
-      .then(response => {
-        console.log("client", response.data);
+    axios.post(soundtrackAPIURL, { selectedMovie }).then(response => {
+      this.setState({
+        currentPlaylistID: response.data.playlistID
       });
+    });
   };
   render = () => {
-    const { movies, isLoading } = this.state;
+    const { movies, isLoading, currentPlaylistID } = this.state;
     return (
-      <SearchForm
-        movies={movies}
-        isLoading={isLoading}
-        handleChange={this.handleChange}
-        handleSelect={this.getSoundTrackList}
-      />
+      <div>
+        <SearchForm
+          movies={movies}
+          isLoading={isLoading}
+          handleChange={this.handleChange}
+          handleSelect={this.getSoundTrackList}
+        />
+        <iframe
+          src={`https://open.spotify.com/embed/user/12152339910/playlist/${currentPlaylistID}`}
+          width="300"
+          height="380"
+          frameborder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+        />
+      </div>
     );
   };
 }

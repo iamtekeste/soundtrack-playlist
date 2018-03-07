@@ -1,0 +1,16 @@
+☐ setup node inspector
+☐ create controllers / code clean up in general
+☐ move to async await
+☐ add a way that refreshes the token every hour. hint > use setInterval
+☐ handle reaching API rate limits
+☐ error handling and logging
+☐ save created playlists in a database, and query that database first before hitting up tunefind
+✔ get Spotify URI for each song @done (2018-3-7 15:54:35)
+✔ create playlist using those URI @done (2018-3-7 15:54:36)
+☐ create and style movie card which shows poster and title
+☐ create and style playlist
+☐ upload movie poster to be used as playlist, but do it in queue
+☐ check why we are not finding all the tracks eg. the greatest showman has 13 but we only have 4 tracks
+☐ hanlde properly if we can't find the tunefind page for the movie
+☐ create a separate Spotify account just for this app
+☐ put links back to the source of the playlist aka tunefind/what-song
