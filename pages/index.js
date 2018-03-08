@@ -35,6 +35,9 @@ export default class Index extends Component {
       });
     console.log("...fetching movie details");
   });
+  componentDidMount = () => {
+    //this.getSoundTrackList({ title: "Black Panther", release_date: "2018" });
+  };
   getSoundTrackList = selectedMovie => {
     if (selectedMovie === null) return;
     const soundtrackAPIURL = "/search";
@@ -55,14 +58,14 @@ export default class Index extends Component {
           handleChange={this.handleChange}
           handleSelect={this.getSoundTrackList}
         />
-        <iframe
+        {/* <iframe
           src={`https://open.spotify.com/embed/user/12152339910/playlist/${currentPlaylistID}`}
           width="300"
           height="380"
           frameborder="0"
           allowtransparency="true"
           allow="encrypted-media"
-        />
+        /> */}
       </div>
     );
   };

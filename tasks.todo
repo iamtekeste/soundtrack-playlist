@@ -14,3 +14,4 @@
 ☐ hanlde properly if we can't find the tunefind page for the movie
 ☐ create a separate Spotify account just for this app
 ☐ put links back to the source of the playlist aka tunefind/what-song
+☐ better variables.env eg. use baseURL, add tunefind there 

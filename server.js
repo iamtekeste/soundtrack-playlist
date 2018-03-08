@@ -1,8 +1,4 @@
-const {
-  getSoundTracks,
-  createSoundTracksPageURL,
-  createPlaylist
-} = require("./SoundTrackService");
+const { buildPlaylist } = require("./services/SoundTrackService");
 
 const express = require("express");
 const next = require("next");
@@ -29,33 +25,13 @@ app.prepare().then(() => {
     const aboutPage = "/about";
     app.render(req, res, aboutPage);
   });
-  server.post("/search", (req, res) => {
+  server.post("/search", async (req, res) => {
     const { selectedMovie } = req.body;
-    let soundtrackURLWithYear = createSoundTracksPageURL(selectedMovie, true);
-    let soundtrackURLWithOutYear = createSoundTracksPageURL(
-      selectedMovie,
-      false
-    );
-
-    let source1 = getSoundTracks.bind(null, soundtrackURLWithYear);
-    let source2 = getSoundTracks.bind(null, soundtrackURLWithOutYear);
-
-    let sources = [source1, source2];
-
-    sources
-      .reduce((previousSource, source) => {
-        return previousSource.catch(failed => source());
-      }, Promise.reject())
-      .then(soundTrackList => {
-        return createPlaylist(soundTrackList, selectedMovie);
-      })
-      .then(playlistID => {
-        res.json({ success: true, playlistID });
-      })
-      .catch(error => {
-        console.log(error);
-        res.json({ success: false });
-      });
+    try {
+      const playlistId = await buildPlaylist(selectedMovie);
+    } catch (error) {
+      console.log(error);
+    }
   });
   server.get("*", (req, res) => {
     return handle(req, res);
