@@ -35,13 +35,16 @@ export default class Index extends Component {
       });
     console.log("...fetching movie details");
   });
+  componentDidMount = () => {
+    this.getSoundTrackList({ title: "Black Panther", release_date: "2018" });
+  };
   getSoundTrackList = selectedMovie => {
     if (selectedMovie === null) return;
     const soundtrackAPIURL = "/search";
     this.setState({ selectedMovie });
     axios.post(soundtrackAPIURL, { selectedMovie }).then(response => {
       this.setState({
-        currentPlaylistID: response.data.playlistID
+        currentPlaylistID: response.data.playlistId
       });
     });
   };
