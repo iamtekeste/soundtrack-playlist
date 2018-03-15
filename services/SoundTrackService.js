@@ -1,28 +1,20 @@
 const axios = require("axios");
-require("dotenv").config({ path: "../variables.env" });
-
 const { scrapeSoundtrackData } = require("./ScrapeService");
 
-let spotifyPlayListEndPoint;
-let spotifySearchEndPoint;
+const {
+  spotifyPlayListEndPoint,
+  spotifySearchEndPoint,
+  spotifyUserID,
+  tunefindURL
+} = require("../config");
+
 let spotifyAccessToken;
-let spotifyUserID;
-let axiosConfig;
-
-const setupEnvironmentVariables = () => {
-  spotifyPlayListEndPoint = process.env.SPOTIFY_PLAYLIST_ENDPOINT;
-  spotifySearchEndPoint = process.env.SPOTIFY_SEARCH_ENDPOINT;
+const setupEnvVars = () => {
   spotifyAccessToken = process.env.SPOTIFY_ACCESS_TOKEN;
-  spotifyUserID = process.env.SPOTIFY_USERID;
-
-  axiosConfig = {
-    headers: {
-      Authorization: `Bearer ${spotifyAccessToken}`
-    }
-  };
+  axios.defaults.headers.Authorization = `Bearer ${spotifyAccessToken}`;
 };
 const buildPlaylist = async selectedMovie => {
-  setupEnvironmentVariables();
+  setupEnvVars();
   try {
     const scrapedData = await scrapeSoundtrackData(selectedMovie);
     const spotifyTrackURIs = await getSpotifyTrackURIs(scrapedData);
@@ -31,6 +23,7 @@ const buildPlaylist = async selectedMovie => {
       spotifyTrackURIs,
       playlistId
     );
+    return response;
   } catch (error) {
     console.log(error);
   }
@@ -58,8 +51,7 @@ const createPlaylistOnSpotify = async selectedMovie => {
       name: `${selectedMovie.title} Soundtrack`,
       description: `All the music from ${selectedMovie.title}`,
       public: true
-    },
-    headers: axiosConfig.headers
+    }
   };
   try {
     const response = await axios(config);
@@ -73,11 +65,11 @@ const addTracksToSpotifyPlaylist = async (spotifyTrackURIs, playlistId) => {
   const config = {
     url: spotifyPlayListEndPoint + "/" + playlistId + "/tracks",
     params: { uris: spotifyTrackURIs.join(",") },
-    method: "POST",
-    headers: axiosConfig.headers
+    method: "POST"
   };
   try {
     await axios(config);
+    return playlistId;
   } catch (error) {
     throw error;
   }
@@ -90,8 +82,7 @@ const getTrackInfoFromSpotify = async trackData => {
       q: `track:${trackData.title} artist:${trackData.artist}`,
       type: "track",
       limit: 1
-    },
-    headers: axiosConfig.headers
+    }
   };
   try {
     const response = await axios(config);

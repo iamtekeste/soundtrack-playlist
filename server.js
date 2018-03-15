@@ -1,5 +1,3 @@
-const { buildPlaylist } = require("./services/SoundTrackService");
-
 const express = require("express");
 const next = require("next");
 const bodyParser = require("body-parser");
@@ -7,6 +5,9 @@ const axios = require("axios");
 const helmet = require("helmet");
 
 require("dotenv").config({ path: "variables.env" });
+
+const { buildPlaylist } = require("./services/SoundTrackService");
+const { checkSpotifyToken } = require("./services/Auth");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -25,14 +26,18 @@ app.prepare().then(() => {
     const aboutPage = "/about";
     app.render(req, res, aboutPage);
   });
-  server.post("/search", async (req, res) => {
-    const { selectedMovie } = req.body;
-    try {
-      const playlistId = await buildPlaylist(selectedMovie);
-    } catch (error) {
-      console.log(error);
+  server.post("/search", [
+    checkSpotifyToken,
+    async (req, res) => {
+      const { selectedMovie } = req.body;
+      try {
+        const playlistId = await buildPlaylist(selectedMovie);
+        res.json({ success: true, playlistId });
+      } catch (error) {
+        res.send("Whoops!");
+      }
     }
-  });
+  ]);
   server.get("*", (req, res) => {
     return handle(req, res);
   });

@@ -10,7 +10,7 @@ const scrapingConfig = {
         selector: "a[title]",
         attr: "title"
       },
-      artist: ".Tunefind__Artist"
+      artist: "div[class^=SongEventRow__subtitle] a[class^=Subtitle__subtitle]"
     }
   }
 };

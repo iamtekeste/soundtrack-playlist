@@ -1,9 +1,10 @@
-☐ setup node inspector
-☐ create controllers / code clean up in general
-☐ move to async await
-☐ add a way that refreshes the token every hour. hint > use setInterval
+✔ setup node inspector @done (2018-3-11 13:28:05)
+✔ create controllers / code clean up in general @done (2018-3-11 13:29:11)
+✔ move to async await @done (2018-3-11 13:29:00)
+✔ add a way that refreshes the token every hour. hint > use setInterval @done (2018-3-12 16:19:25)
 ☐ handle reaching API rate limits
 ☐ error handling and logging
+    ☐ handle when the markup changes for tunefind
 ☐ save created playlists in a database, and query that database first before hitting up tunefind
 ✔ get Spotify URI for each song @done (2018-3-7 15:54:35)
 ✔ create playlist using those URI @done (2018-3-7 15:54:36)
