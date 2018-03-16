@@ -36,7 +36,7 @@ export default class Index extends Component {
     console.log("...fetching movie details");
   });
   componentDidMount = () => {
-    this.getSoundTrackList({ title: "Black Panther", release_date: "2018" });
+    //this.getSoundTrackList({ title: "Black Panther", release_date: "2018" });
   };
   getSoundTrackList = selectedMovie => {
     if (selectedMovie === null) return;

@@ -1,6 +1,6 @@
 const axios = require("axios");
 const { scrapeSoundtrackData } = require("./ScrapeService");
-
+const { getPlaylistFromDB, savePlaylistToDB } = require("./DBService");
 const {
   spotifyPlayListEndPoint,
   spotifySearchEndPoint,
@@ -16,14 +16,18 @@ const setupEnvVars = () => {
 const buildPlaylist = async selectedMovie => {
   setupEnvVars();
   try {
+    let playlistId = getPlaylistFromDB(selectedMovie);
+    if (playlistId) {
+      return playlistId;
+    }
     const scrapedData = await scrapeSoundtrackData(selectedMovie);
     const spotifyTrackURIs = await getSpotifyTrackURIs(scrapedData);
-    const playlistId = await createPlaylistOnSpotify(selectedMovie);
-    const response = await addTracksToSpotifyPlaylist(
-      spotifyTrackURIs,
-      playlistId
-    );
-    return response;
+    playlistId = await createPlaylistOnSpotify(selectedMovie);
+    playlistId = await addTracksToSpotifyPlaylist(spotifyTrackURIs, playlistId);
+    setTimeout(() => {
+      savePlaylistToDB(playlistId, selectedMovie);
+    }, 0);
+    return playlistId;
   } catch (error) {
     console.log(error);
   }
