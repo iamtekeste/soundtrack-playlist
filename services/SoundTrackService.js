@@ -16,10 +16,14 @@ const setupEnvVars = () => {
 const buildPlaylist = async selectedMovie => {
   setupEnvVars();
   try {
-    let playlistId = getPlaylistFromDB(selectedMovie);
+    let playlistId = await getPlaylistFromDB(selectedMovie);
     if (playlistId) {
       return playlistId;
     }
+  } catch (error) {
+    console.log(error);
+  }
+  try {
     const scrapedData = await scrapeSoundtrackData(selectedMovie);
     const spotifyTrackURIs = await getSpotifyTrackURIs(scrapedData);
     playlistId = await createPlaylistOnSpotify(selectedMovie);
