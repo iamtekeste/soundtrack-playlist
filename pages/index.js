@@ -7,7 +7,8 @@ export default class Index extends Component {
     currentPlaylistID: "47Ne6hrPVXzA72EhtVE93H",
     selectedMovie: {},
     movies: [],
-    isLoading: false,
+    searchingForMovie: false,
+    searchingForPlaylist: false,
     searchTerm: ""
   };
   handleChange = searchTerm => {
@@ -18,6 +19,7 @@ export default class Index extends Component {
   };
   getMovieDetails = debounce(() => {
     const tmdbURL = "https://api.themoviedb.org/3/search/movie";
+    this.setState({ searchingForMovie: true });
     axios
       .get(tmdbURL, {
         params: {
@@ -27,45 +29,65 @@ export default class Index extends Component {
       })
       .then(response => {
         this.setState({
-          movies: response.data.results
+          movies: response.data.results,
+          searchingForMovie: false
         });
       })
       .catch(error => {
         console.log(error);
       });
-    console.log("...fetching movie details");
   });
   componentDidMount = () => {
     //this.getSoundTrackList({ title: "Black Panther", release_date: "2018" });
   };
   getSoundTrackList = selectedMovie => {
     if (selectedMovie === null) return;
+    this.setState({ searchingForPlaylist: true });
     const soundtrackAPIURL = "/search";
     this.setState({ selectedMovie });
     axios.post(soundtrackAPIURL, { selectedMovie }).then(response => {
       this.setState({
-        currentPlaylistID: response.data.playlistId
+        currentPlaylistID: response.data.playlistId,
+        searchingForPlaylist: false
       });
     });
   };
   render = () => {
-    const { movies, isLoading, currentPlaylistID } = this.state;
+    const {
+      movies,
+      searchingForPlaylist,
+      searchingForMovie,
+      currentPlaylistID
+    } = this.state;
     return (
       <div>
         <SearchForm
           movies={movies}
-          isLoading={isLoading}
+          searchingForMovie={searchingForMovie}
           handleChange={this.handleChange}
           handleSelect={this.getSoundTrackList}
         />
-        <iframe
-          src={`https://open.spotify.com/embed/user/12152339910/playlist/${currentPlaylistID}`}
-          width="300"
-          height="380"
-          frameborder="0"
-          allowtransparency="true"
-          allow="encrypted-media"
-        />
+        {searchingForPlaylist ? (
+          <h1>Searching...</h1>
+        ) : (
+          <div>
+            {currentPlaylistID ? (
+              <iframe
+                src={`https://open.spotify.com/embed/user/12152339910/playlist/${currentPlaylistID}`}
+                width="300"
+                height="380"
+                frameBorder="0"
+                allowtransparency="true"
+                allow="encrypted-media"
+              />
+            ) : (
+              <div>
+                <h1>Playlist not found</h1>
+                <p>Leave your email and we will get back to you</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   };

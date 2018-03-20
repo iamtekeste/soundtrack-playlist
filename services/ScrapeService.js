@@ -48,10 +48,10 @@ const scrapeSoundtrackData = async selectedMovie => {
     if (response.statusCode === 200) {
       return data;
     } else {
-      throw new Error("404 - playlist not found");
+      throw new Error("404 - playlist page not found");
     }
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 /**

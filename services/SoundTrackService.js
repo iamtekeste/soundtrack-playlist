@@ -33,7 +33,7 @@ const buildPlaylist = async selectedMovie => {
     }, 0);
     return playlistId;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 
@@ -47,7 +47,6 @@ const getSpotifyTrackURIs = async ({ soundtrackData }) => {
     });
     return filteredTrackURIs;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -65,7 +64,6 @@ const createPlaylistOnSpotify = async selectedMovie => {
     const response = await axios(config);
     return response.data.id;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -97,9 +95,10 @@ const getTrackInfoFromSpotify = async trackData => {
     const track = response.data.tracks.items[0];
     if (track) {
       return track.uri;
+    } else {
+      console.log(`Coundn't find this track on Spotify ${trackData.title}`);
     }
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

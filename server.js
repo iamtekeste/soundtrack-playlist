@@ -17,7 +17,12 @@ app.prepare().then(() => {
   const server = express();
   server.use(helmet());
   server.use(bodyParser.json());
-
+  server.use(function(error, req, res, next) {
+    console.log("begin stack");
+    console.error(error.stack);
+    console.log("end stack");
+    res.send(error);
+  });
   server.get("/", (req, res) => {
     const indexPage = "/";
     app.render(req, res, indexPage);
@@ -34,7 +39,8 @@ app.prepare().then(() => {
         const playlistId = await buildPlaylist(selectedMovie);
         res.json({ success: true, playlistId });
       } catch (error) {
-        res.send("Whoops!");
+        console.log(error);
+        res.json({ success: false });
       }
     }
   ]);

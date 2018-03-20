@@ -28,10 +28,9 @@ const getPlaylistFromDB = async movie => {
     if (result.Item) {
       return result.Item.playlistId;
     } else {
-      throw new Error("Item not found");
+      throw new Error("Playlist not found in the DB. Trying scraping...");
     }
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

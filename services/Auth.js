@@ -23,8 +23,9 @@ const checkSpotifyToken = async (req, res, next) => {
       next();
       throw error;
     }
+  } else {
+    next();
   }
-  next();
 };
 
 const refreshToken = async () => {
